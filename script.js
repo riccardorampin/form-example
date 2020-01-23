@@ -56,8 +56,9 @@ $('#registration').submit(function (e) {
     }
 });
 
-$('#username').on('blur', function() {
+$('#username').on('input', function() {
 
+    var user = $(this).val().trim();
     var el = $(this);
 
     $.ajax({
@@ -69,14 +70,62 @@ $('#username').on('blur', function() {
             dataType: "json",   
             
             success: function (result) {
-                if (result.valid) {
+                if (!result.valid) {
+                    el.removeClass('is-valid');
                     el.addClass('is-valid');
                 }else{
+                    el.removeClass('is-invalid');
                     el.addClass('is-invalid');
                 }
-            }
+             }
 
     });
+
+    // $.post(
+    //     'username.php',
+    //     {
+    //         username: el.val()
+    //     },
+
+    //     function (result){
+    //         if (result.valid){
+    //             el.addClass('is-valid');
+    //         } else {
+    //             el.addClass('is-invalid');
+    //         }
+    //     },
+    // 'json'
+    // );
 });
+
+
+$('#email').on('input', function () {
+    var email = $(this).val().trim();
+    var el = $(this);
+    if (validateEmail(email)) {
+        $.post(
+            'email.php',
+            {
+                email: email
+            },
+            function (data) {
+                if (!data.valid) {
+                    el.removeClass('is-valid');
+                    el.addClass('is-invalid');
+                } else {
+                    el.removeClass('is-invalid');
+                    el.addClass('is-valid'); 
+                }
+            },
+            'json'
+        );
+    } else {
+        el.removeClass('is-valid');
+        el.addClass('is-invalid');
+    }
+})
+
+
+
 
     
