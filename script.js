@@ -57,7 +57,7 @@ $('#registration').submit(function (e) {
 });
 
 $('#username').on('input', function() {
-
+    
     var user = $(this).val().trim();
     var el = $(this);
 
@@ -70,12 +70,17 @@ $('#username').on('input', function() {
             dataType: "json",   
             
             success: function (result) {
-                if (!result.valid) {
-                    el.removeClass('is-valid');
-                    el.addClass('is-valid');
-                }else{
+
+                if (result.valid) {
+                    
                     el.removeClass('is-invalid');
+                    el.addClass('is-valid');
+
+                } else {
+                   
+                    el.removeClass('is-valid');
                     el.addClass('is-invalid');
+
                 }
              }
 
@@ -98,31 +103,60 @@ $('#username').on('input', function() {
     // );
 });
 
+var pendingRequest = false;
 
 $('#email').on('input', function () {
+    
     var email = $(this).val().trim();
     var el = $(this);
-    if (validateEmail(email)) {
-        $.post(
-            'email.php',
-            {
-                email: email
-            },
-            function (data) {
-                if (!data.valid) {
-                    el.removeClass('is-valid');
-                    el.addClass('is-invalid');
-                } else {
-                    el.removeClass('is-invalid');
-                    el.addClass('is-valid'); 
-                }
-            },
-            'json'
-        );
+
+    if (!pendingRequest){
+
+            if (validateEmail(email)) {
+        
+                $.post(
+                    
+                    'email.php',
+
+                    {
+                        email: email
+                    },
+
+                    function (data) {
+
+                        if (!data.valid) {
+                        
+                            el.removeClass('is-valid');
+                            el.addClass('is-invalid');
+
+                        } else {
+                        
+                            el.removeClass('is-invalid');
+                            el.addClass('is-valid'); 
+
+                        }
+
+                    },
+                    
+                    'json'
+
+                );
+
+                pendingRequest = true;
+
+        } else {
+
+            el.removeClass('is-valid');
+            el.addClass('is-invalid');
+
+        }
+
     } else {
-        el.removeClass('is-valid');
-        el.addClass('is-invalid');
+
     }
+    
+    
+    
 })
 
 
